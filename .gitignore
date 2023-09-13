@@ -1,0 +1,5 @@
+#local files
+.vscode/
+data/
+bin/
+.DS_store
