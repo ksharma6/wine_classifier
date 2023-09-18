@@ -1,3 +1,3 @@
 #! /bin/sh
 
-cmake -S . -B build/
+cmake -DEIGEN_BUILD_DOC=OFF -S . -B build/
