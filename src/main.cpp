@@ -1,13 +1,27 @@
-//#include <lib/eigen/Eigen/Dense>
+#include <lib/eigen/Eigen/Dense>
 #include <iostream>
 #include <string>
 
-#include "../etl/etl.h"
+#include "etl/etl.h"
 
 int main(){
-    ETL test1;
-    std::string somestring = "some string";
-    test1.load_data(somestring);
+    std::string path;
+    char sep = ',';
+    bool headers;
+    
+    
+    
+    std::cout << "Input path to raw data\n";
+    std::cin >> path;
+
+  
+
+    std::cout << "Does data contain headers (true/false)?\n";
+    std::cin >> headers;
+
+    ETL test(path, sep, headers);
+    test.load_data();
+    
 
     return 0;
 }

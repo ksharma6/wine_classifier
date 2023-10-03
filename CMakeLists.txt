@@ -1,15 +1,20 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.21.3)
 project(WineClassifier)
 
 set(CMAKE_CXX_STANDARD 17)
 
 set(EXECUTABLE_OUTPUT_PATH ../bin/)
-add_executable(${PROJECT_NAME} src/main.cpp
-                etl/etl.h)
 
-add_subdirectory(etl)
-target_link_libraries(${PROJECT_NAME} etl)
-#target_link_directories(WineClassifier PRIVATE ${CMAKE_SOURCE_DIR}/src/SomeLib/cpp/build/)
-#target_link_libraries(WineClassifier mearlymath)
+add_subdirectory(src/etl)
+add_subdirectory(src/lib/eigen)
 
+include_directories(${PROJECT_SOURCE_DIR}/src) #Add the given directories to those the compiler uses to search for include files.
 
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+    src/etl/etl.cpp)
+
+target_link_libraries(${PROJECT_NAME} 
+    PRIVATE etl
+    PRIVATE eigen  
+    )
