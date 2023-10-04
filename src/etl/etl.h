@@ -13,7 +13,7 @@ public:
     bool header;
     
     ETL(std::string a, char b, bool c);
-    std::vector<std::vector <std::string>> load_data();
+    std::vector<std::vector <char>> load_data();
 
 
 

@@ -13,22 +13,36 @@ ETL::ETL(std::string a, char b, bool c):path(a),sep(b),header(c)
 {}
 
 
-std::vector<std::vector <std::string>> ETL::load_data()
+std::vector<std::vector <char>> ETL::load_data()
     {
-        std::vector<std::vector <std::string>> datastring;
+        std::vector<std::vector <char>> datastring;
         
         std::fstream raw_data(path, std::ios::in);
         std::string line;
         
-        if (raw_data.is_open())
-        {
-            while(getline(raw_data, line))
+        while(getline(raw_data, line, sep))
             {
-                std::vector<std::string> vec;
-                //boost::algorithm::split(vec, line, boost::is_any_of(sep));
-                datastring.push_back(vec);
+                std::vector<char> row;
+                
+                for (char &c : line)
+                {
+                    if (c != sep)
+                    {
+                        row.push_back(c);
+                    }
+                }
+                datastring.push_back(row);
             }
+        
+
+        for ( std::vector<char> &row : datastring)
+        {
+            for (char &c : row)
+            {
+                std::cout << c<< ' ';
+            }
+            std::cout << '\n';
         }
-        raw_data.close();
+
         return datastring;
     };
