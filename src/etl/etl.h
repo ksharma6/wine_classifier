@@ -33,13 +33,14 @@ public:
     convert 2D vector into 2d eigen matrix
     */
     Eigen::MatrixXd csv_to_eigen(std::vector<std::vector <std::string>> dataset);
-
-
-
-
-
+    
+    /*
+    split dataset into x_train, x_test, y_train, y_test
+    */
+    std::tuple <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd> train_test_split(Eigen::MatrixXd dataset, float train_size = .8);
 
 };
-
+Eigen::ArrayXd calculate_mean(Eigen::MatrixXd dataset);
+Eigen::ArrayXd calculate_sd(Eigen::MatrixXd dataset, Eigen::ArrayXd means);
 
 #endif
