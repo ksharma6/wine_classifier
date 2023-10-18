@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <tuple>
+#include <cmath>
 
 #include "../lib/eigen/Eigen/Dense"
 #include "etl.h"
@@ -60,30 +61,82 @@ std::tuple <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd> 
 {
     int train_rows = rows * train_size;
     int test_rows = rows - train_rows;
+    
+    Eigen::MatrixXd train = dataset.topRows(train_rows);
+    Eigen::MatrixXd test = dataset.bottomRows(test_rows);
 
     Eigen::MatrixXd x_train, x_test, y_train, y_test;
 
-    x_train = dataset.topRows(train_rows);
-    x_test = dataset.bottomRows(test_rows);
+    x_train = train.rightCols(train.cols() -1);
+    y_train = train.leftCols(1);
 
-    y_train = x_train.leftCols(1);
-    y_test = x_test.leftCols(1);
+    
+
+    x_test = test.rightCols(train.cols() -1);
+    y_test = test.leftCols(1);
 
     
     return std::make_tuple(x_train, x_test, y_train, y_test);
 }
 
-Eigen::ArrayXd calculate_mean(Eigen::MatrixXd dataset)
+std::vector <double> ETL::calculate_mean(Eigen::MatrixXd dataset)
 {
-    Eigen::ArrayXd means = dataset.colwise().mean();
-    std::cout << means << std::endl;
+    std::vector <double> means;
+    for (int c=0; c < dataset.cols() ; c++)
+    {
+        means.push_back(dataset.col(c).mean());
+    }
     return means;
 }
 
-
-Eigen::ArrayXd calculate_sd(Eigen::MatrixXd dataset, Eigen::ArrayXd means)
+std::vector <double> ETL::calculate_sd(Eigen::MatrixXd dataset) 
 {
-    Eigen::ArrayXd sd;
+    std::vector <double> standard_deviations;
 
-    return sd;
+    for (int col = 0; col < dataset.cols(); col++)
+    {
+        Eigen::ArrayXd vec = dataset.col(col);
+        double std_dev = std::sqrt((vec - vec.mean()).square().sum()/(vec.size()-1));
+        
+        standard_deviations.push_back(std_dev);
+    }
+    return standard_deviations;
+}
+
+Eigen::MatrixXd ETL::normalize_matrix(Eigen::MatrixXd dataset,
+std::vector <double>  means, std::vector <double> standard_deviations)
+{
+    Eigen::MatrixXd norm_data(dataset.rows(), dataset.cols());
+
+    for (int i=0; i< dataset.rows(); i++)
+    {
+        for (int j=0; j < dataset.cols(); j++)
+        {
+            norm_data(i, j) = (dataset.coeff(i,j) - means[j])/standard_deviations[j];
+        }
+    }
+    return norm_data;
+}
+
+void ETL::write_to_csv(Eigen::MatrixXd dataset, std::string filename)
+{
+    std::ofstream file((opath + filename).c_str());
+    for (int i = 0; i < dataset.rows(); i++)
+    {
+        for (int j=0; j < dataset.cols(); j++)
+        {
+            std::string str = std::to_string(dataset(i, j));
+            if (j + 1 == dataset.cols())
+            {
+                file << str;
+            }
+            else
+            {
+               file << str << ',';
+            }
+        }
+           file << '\n';
+    }
+
+    std::cout << "File writing completed" << std::endl;
 }

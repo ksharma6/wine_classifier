@@ -16,6 +16,9 @@
 */
 class ETL
 {
+private:
+    std::string opath = "/home/kishen/documents/c++_projects/wine_classifier/data/";
+
 public:
     std::string path;
     char sep;
@@ -23,7 +26,6 @@ public:
     int rows;
     int cols;
 
-    
     ETL(std::string a, char b, bool c, int d, int e);
     /*
     load dataset into memory and return 2D vector
@@ -38,9 +40,13 @@ public:
     split dataset into x_train, x_test, y_train, y_test
     */
     std::tuple <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd> train_test_split(Eigen::MatrixXd dataset, float train_size = .8);
+    std::vector <double> calculate_mean(Eigen::MatrixXd dataset);
+    std::vector <double>  calculate_sd(Eigen::MatrixXd dataset);
+    Eigen::MatrixXd normalize_matrix(Eigen::MatrixXd dataset,std::vector <double>  means, std::vector <double> standard_deviations);
+    void write_to_csv(Eigen::MatrixXd dataset, std::string filename);
+
 
 };
-Eigen::ArrayXd calculate_mean(Eigen::MatrixXd dataset);
-Eigen::ArrayXd calculate_sd(Eigen::MatrixXd dataset, Eigen::ArrayXd means);
+
 
 #endif
