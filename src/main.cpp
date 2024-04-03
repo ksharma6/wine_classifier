@@ -5,26 +5,26 @@
 #include <tuple>
 
 #include "etl/etl.h"
-
+#include "modeling/log_reg.h"
 
 #include <fstream>
 
 int main(){ 
     //init ETL class
-    std::string path;
+    std::string path = "/home/kishen/documents/c++_projects/wine_classifier/data/wine_data_shuffled.csv";
     char sep = ',';
-    bool headers;
+    bool headers = false;
     int rows = 178;
     int cols = 14;
     
-    std::cout << "Input path to raw data\n";
-    std::cin >> path;
+    // std::cout << "Input path to raw data\n";
+    // std::cin >> path;
 
-    std::cout << "Does data contain headers (true/false)?\n";
-    std::cin >> headers;
+    // std::cout << "Does data contain headers (true/false)?\n";
+    // std::cin >> headers;
 
 
-    //create data_mat
+    //create normalized train + test sets
     std::vector<std::vector<std::string>> csv;
 
     ETL etl(path, sep, headers, rows, cols);
@@ -33,39 +33,23 @@ int main(){
     Eigen::MatrixXd mat1;
     mat1 = etl.csv_to_eigen(csv);
 
-    //create train + test sets
     Eigen::MatrixXd x_train, x_test, y_train, y_test;
-    
 
     std::tie(x_train, x_test, y_train, y_test) = etl.train_test_split(mat1);
     
-    // //normalize data
-    std::vector <double>  means = etl.calculate_mean(x_train);
-    std::vector <double> sds = etl.calculate_sd(x_train);
+    std::vector <double>  train_means = etl.calculate_mean(x_train);
+    std::vector <double> train_sds = etl.calculate_sd(x_train);
     
-    Eigen::MatrixXd x_train_norm = etl.normalize_matrix(x_train, means, sds);
-    etl.write_to_csv(x_train_norm, "test.csv");
-    // //write file to path
-    // std::string opath = "/home/kishen/documents/c++_projects/wine_classifier/data/test.csv";
+    Eigen::MatrixXd x_train_norm = etl.normalize_matrix(x_train, train_means, train_sds);
+    Eigen::MatrixXd x_test_norm = etl.normalize_matrix(x_test, train_means, train_sds);
+    
+    //train logreg model
 
-    // std::ofstream file(opath.c_str());
-    // for (int i = 0; i < x_train_norm.rows(); i++)
-    // {
-    //     for (int j=0; j < x_train_norm.cols(); j++)
-    //     {
-    //         std::string str = std::to_string(x_train_norm(i, j));
-    //         if (j == x_train_norm.cols())
-    //         {
-    //             file << str;
-    //         }
-    //         else
-    //         {
-    //             file << str << ',';
-    //         }
-
-    //     }
-    //     file << '\n';
-    // }
+    Eigen::MatrixXd scores;
+    double m = 0; // max to subract from numerarot to prevent softmax from overflow
+    //https://codereview.stackexchange.com/questions/180467/implementing-softmax-in-c
+    //https://codereview.stackexchange.com/questions/180467/implementing-softmax-in-c
+    return 0;
 
 
 
