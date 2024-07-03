@@ -42,7 +42,7 @@ int main(){
     
     Eigen::MatrixXd x_train_norm = etl.normalize_matrix(x_train, train_means, train_sds);
     Eigen::MatrixXd x_test_norm = etl.normalize_matrix(x_test, train_means, train_sds);
-    
+    std::cout << x_train_norm << std::endl;         
     //train logreg model
 
     Eigen::MatrixXd scores;
