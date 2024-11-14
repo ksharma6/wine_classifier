@@ -17,7 +17,7 @@
 class ETL
 {
 private:
-    std::string opath = "/home/kishen/documents/c++_projects/wine_classifier/data/";
+    std::string opath = "/home/kishen/documents/projects/c++_projects/wine_classifier/data";
 
 public:
     std::string path;
